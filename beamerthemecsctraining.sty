@@ -1,0 +1,106 @@
+\mode<presentation>
+
+\RequirePackage{fontspec}
+
+\setsansfont{Corbel}
+
+% https://intra.csc.fi/intoguidelines/marcom/Documents/CSC%20Brand/Br%C3%A4ndiv%C3%A4rit.jpg
+% \definecolor{CSC1}{HTML}{830051}
+% \definecolor{CSC2}{HTML}{006778}
+% \definecolor{CSC3}{HTML}{5e6a71}
+\definecolor{CSCblue}{HTML}{0082bb}
+\definecolor{CSCgreen}{HTML}{7dc242}
+\definecolor{CSCtitleBG}{HTML}{0070a7}
+\definecolor{CSCsectionBG}{HTML}{0082bb}
+
+\setbeamerfont{title}{size=\huge}
+\setbeamercolor{title}{fg=white}
+
+\setbeamerfont{subtitle}{size=\small}
+\setbeamercolor{subtitle}{fg=white}
+
+\setbeamerfont{section}{size=\huge}
+\setbeamercolor{section}{fg=white}
+
+\setbeamercolor{frametitle}{fg=black}
+\setbeamerfont{frametitle}{size=\Large}
+
+\setbeamercolor{alerted text}{fg=CSCblue}
+
+% \setbeamercolor{structure}{fg=CSC3}
+% \setbeamercolor{footline}{fg=CSC3}
+
+\beamertemplatenavigationsymbolsempty
+
+\pgfdeclareimage[width=2cm,interpolate=true]{traininglogo}{images/csc-training-logo.png}
+\pgfdeclareimage[width=\paperwidth, height=\paperheight]{titlepagebg}{images/csc-training-bg.png}
+\pgfdeclareimage[width=1.5cm]{csclogo}{images/CSC_2012_LOGO_RGB.pdf}
+
+\setbeamertemplate{title page}{
+  \begin{picture}(0,0)
+
+    \put(-28,-176){%
+      \pgfuseimage{titlepagebg}
+    }
+
+    \put(-12,62){%
+      \pgfuseimage{traininglogo}
+    }
+    
+    \put(-10,-160){%
+      \begin{minipage}[b][45mm][t]{226mm}
+        \usebeamerfont{title}\usebeamercolor[fg]{title}{\inserttitle\par}
+      \end{minipage}
+    }
+
+    \put(-10,-205){%
+      \begin{minipage}[b][45mm][t]{226mm}
+        \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}{\insertsubtitle\par}
+      \end{minipage}
+    }
+
+  \end{picture}
+}
+
+\setbeamertemplate{section page}{
+  \begin{picture}(0,0)
+
+    \put(10,-174){%
+      \begin{minipage}[b][45mm][t]{226mm}
+        \usebeamerfont{section}\usebeamercolor[fg]{section}{\insertsection\par}
+      \end{minipage}
+    }
+
+  \end{picture}
+}
+
+\setbeamertemplate{headline}{
+  \vspace{1em}
+  \hfill%
+  \pgfuseimage{csclogo}
+  \hspace{1em}
+}
+
+\setbeamercolor{itemize item}{fg=black}
+\setbeamercolor{itemize subitem}{fg=black}
+\setbeamercolor{itemize subsubitem}{fg=black}
+
+\setbeamertemplate{itemize items}[circle]
+% \setbeamertemplate{itemize subitem}[square]
+% \setbeamertemplate{itemize subsubitem}[triangle]
+
+\setbeamertemplate{frametitle}{\insertframetitle}
+
+\AtBeginDocument{%
+  \setbeamercolor{background canvas}{bg=CSCtitleBG}
+  \frame[plain]{\titlepage}
+  \setbeamercolor{background canvas}{bg=}
+}
+
+\AtBeginSection{
+  \setbeamercolor{background canvas}{bg=CSCsectionBG}
+  \frame[plain]{\sectionpage}
+  \setbeamercolor{background canvas}{bg=}
+}
+
+\mode<all>
