@@ -5,3 +5,6 @@
 *.out
 *.snm
 *.toc
+/_minted-ml-webinar1
+/ml-webinar1.pdf
+/ml-webinar1.vrb

@@ -2,12 +2,14 @@
 
 \RequirePackage{fontspec}
 
+\setmainfont{Corbel}
 \setsansfont{Corbel}
+%\setmonofont{Liberation Mono}
 
 % https://intra.csc.fi/intoguidelines/marcom/Documents/CSC%20Brand/Br%C3%A4ndiv%C3%A4rit.jpg
-% \definecolor{CSC1}{HTML}{830051}
-% \definecolor{CSC2}{HTML}{006778}
-% \definecolor{CSC3}{HTML}{5e6a71}
+\definecolor{CSC1}{HTML}{830051}
+\definecolor{CSC2}{HTML}{006778}
+\definecolor{CSC3}{HTML}{5e6a71}
 \definecolor{CSCblue}{HTML}{0082bb}
 \definecolor{CSCgreen}{HTML}{7dc242}
 \definecolor{CSCtitleBG}{HTML}{0070a7}
@@ -92,6 +94,21 @@
 % \setbeamertemplate{itemize subsubitem}[triangle]
 
 \setbeamertemplate{frametitle}{\insertframetitle}
+
+\addtocounter{framenumber}{-1}
+\addtobeamertemplate{footline}{}{%
+  \usebeamerfont{footline}%
+  \usebeamercolor[fg]{footline}%
+  %% bottom left
+  % \hspace{1em}%
+  % \insertframenumber/\inserttotalframenumber
+  % \vspace{1em}%
+  %% bottom right
+  \hfill%
+  \insertframenumber/\inserttotalframenumber%
+  \hspace{1em}%
+  \vspace{1em}%
+}
 
 \AtBeginDocument{%
   \setbeamercolor{background canvas}{bg=CSCtitleBG}
