@@ -6,8 +6,13 @@
 \usepackage{minted}
 
 \graphicspath{{images/}}
+
 \usetheme{csctraining}
-\usemintedstyle{solarized-dark}
+
+\usemintedstyle{emacs}
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codehl}{rgb}{0.95,0.95,0.05}
+\setminted{highlightcolor=codehl,bgcolor=codebg}
 
 \newcommand{\link}[1]{\alert{\url{#1}}}
 \newcommand{\vitem}{\vfill\item}
@@ -105,13 +110,13 @@
 
   \vspace{1em}
 
-\begin{verbatim}
-ssh <csc_username>@puhti.csc.fi
-\end{verbatim}
+\begin{minted}{shell-session}
+$ ssh <csc_username>@puhti.csc.fi
+\end{minted}
 
-\begin{verbatim}
-ssh <csc_username>@puhti-login2.csc.fi
-\end{verbatim}
+\begin{minted}{shell-session}
+$ ssh <csc_username>@puhti-login2.csc.fi
+\end{minted}
 
 \end{frame}
 
@@ -165,12 +170,12 @@ pip install --user <packagename>
   If you need a specific setup, and our modules are not right for you \ldots
   \begin{itemize}
   \vitem use a virtualenv:
-\begin{verbatim}
-python3 -m venv myenv
-source myenv/bin/activate
-pip install ...
-\end{verbatim}
-    
+\begin{minted}{shell-session}
+$ python3 -m venv myenv
+$ source myenv/bin/activate
+$ pip install ...
+\end{minted}
+
   \vitem use conda: {\small \link{https://docs.csc.fi/support/tutorials/conda/}}
   \vitem use singularity containers: {\small \link{https://docs.csc.fi/computing/containers/run-existing/}}
     
@@ -203,9 +208,7 @@ pip install ...
 
   Create a job script, for example {\tt run.sh}:
   
-\definecolor{bg}{rgb}{0.95,0.95,0.95}
-\definecolor{hl}{rgb}{0.95,0.95,0.05}
-\begin{minted}[bgcolor=bg,fontsize=\small,highlightlines={3,8},highlightcolor=hl]{bash}
+\begin{minted}[fontsize=\small,highlightlines={3,8}]{bash}
 #!/bin/bash
 #SBATCH --account=<project>
 #SBATCH --partition=gpu
@@ -246,7 +249,16 @@ scancel <jobid>
 \section{Data storage}
 
 \begin{frame}{Data storage on Puhti}
-  
+
+  \begin{itemize}
+  \item Disk space and \emph{number of files} are limited on Puhti! \\
+    {\small $\rightarrow$ We want to ensure that the shared (Lustre) filesystem works
+    efficiently for everyone!}
+  \item Useful command: {\tt csc-workspaces}
+  \end{itemize}
+
+  \vfill
+
   {\footnotesize
     \begin{tabular}{lllrrl}
              & Owner    & Path                      & Capacity & Number of files & Cleaning \\
@@ -256,25 +268,96 @@ scancel <jobid>
     scratch  & Project  & {\tt /scratch/<project>}  & 1 TiB    & 1 000 000 files & Yes - 90 days \\
     \end{tabular}
   }
-  \vspace{1em}
+  \vfill
+  {\small
+    Data quotas can be increased via MyCSC!
 
+    \link{https://docs.csc.fi/computing/disk/}}
+\end{frame}
+
+\begin{frame}[fragile]{Using Allas}
   \begin{itemize}
-  \item Disk space and \emph{number of files} are limited on Puhti!
-    \begin{itemize}
-    \item Reason: we want to ensure that the shared (Lustre) filesystem
-      works efficiently for everyone!
-    \end{itemize}
-  \item Data quotas can be increased via MyCSC!
+  \item store big datasets in Allas, CSC's object storage
+  \item download them to project scratch prior to computation
+  \item you can also upload trained models (or keep in projappl)
   \end{itemize}
 
-  % \vspace{1em}
+  \vfill
   
-  {\small \link{https://docs.csc.fi/computing/disk/}}
+  % \begin{verbatim}
+\begin{minted}{shell-session}
+$ module load allas
+$ allas-conf
+$ cd /scratch/<your-project>
+$ swift download <bucket-name> your-dataset.tar  
+\end{minted}
+%\end{verbatim}
+\end{frame}
+
+\begin{frame}{Large number of files}
+  \begin{itemize}
+  \vitem Many datasets contain a large number of small files
+  \vitem Shared filesystem (Lustre) performs poorly in this scenario \\
+    $\rightarrow$ noticable slowdowns for all Puhti users!
+  \end{itemize}
+
+  \vfill
+  Consider alternatives:
+
+  \begin{itemize}
+  \vitem packaging your dataset into larger files                     
+  \vitem use NVME fast local storage on GPU nodes
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Using more efficient data formats}
+
+  Instead of many small files, use one or a few bigger files.
+
+  \vfill
+  
+  Examples:
+
+  \begin{itemize}
+  \vitem TensorFlow's TFRecord format
+  \vitem HDF5
+  \vitem LMDB
+  \vitem ZIP, for example via Python's {\tt zipfile} library
+  \end{itemize}
+
+  \vfill
+\end{frame}
+
+\begin{frame}[fragile]{Fast local NVME drive}
+
+  \begin{itemize}
+  \item All GPU nodes have a local NVME drive
+  \item Just add {\tt nvme:<number-of-GB>} to sbatch {\tt --gres} flag
+  \end{itemize}
+
+\begin{minted}[fontsize=\footnotesize,highlightlines={8,10,12}]{bash}
+#!/bin/bash
+#SBATCH --account=<project>
+#SBATCH --partition=gpu
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=64G
+#SBATCH --time=1:00:00
+#SBATCH --gres=gpu:v100:1,nvme:100
+
+tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH
+
+srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
+\end{minted}
+
 \end{frame}
 
 \section{GPU utilization}
 
 \section{Multi-GPU and multi-node jobs}
+
+% srun --ntasks=$SLURM_NNODES --ntasks-per-node=1 \
+%     tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH  
 
 \section{Singularity containers}
 
