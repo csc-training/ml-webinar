@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{minted}
+\usepackage[absolute,overlay]{textpos}
 
 \graphicspath{{images/}}
 
@@ -354,7 +355,171 @@ srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
 
 \section{GPU utilization}
 
+\begin{frame}{GPU utilization}
+
+GPUs are an expensive resource compared to CPUs ($\times$ 60 BUs!) \\
+$\rightarrow$ GPU should be maximally utilized!
+
+\vspace{1em}
+
+\begin{minipage}{0.8\textwidth}
+For a running job:
+\begin{itemize}
+\item use {\tt squeue} to find out on what node (computer) it is running
+\item ssh into that node, e.g., {\tt ssh r01g01}
+\item find the process id of your job with \\
+  {\tt ps -u \$USER }
+\item run {\tt nvidia-smi}
+\end{itemize}
+\end{minipage}
+
+\begin{textblock}{6}(9.8,8)
+  \includegraphics[width=\textwidth]{v100}
+\end{textblock}
+\end{frame}
+
+\begin{frame}{GPU utilization}
+
+  For a finished job:
+
+  \begin{itemize}
+  \vitem run {\tt gpuseff <jobid>}
+  \vitem shows GPU utilisation statistics for the whole running time
+  \vitem \alert{note:} gpuseff is currently in testing usage, and still
+    under development
+  \end{itemize}
+
+  \vfill
+  
+  You can always contact our service desk if you need advice on how to
+  improve your GPU utilization!
+\end{frame}
+
+\begin{frame}[fragile]{Using multiple CPUs for ETL}
+  \includegraphics[width=\textwidth]{etl}
+
+  \begin{itemize}
+  \item Common bottle-neck: CPU cannot keep up with GPU
+  \item GPU has to wait for more data \ldots
+  \item Solution: use more CPUs (they are ``cheaper'' than GPUs!)
+  \end{itemize}
+
+  \vspace{0.5em}
+  
+  A good \alert{rule of thumb in Puhti is to reserve 10 CPUs per GPU} \\
+  (as there are 4 GPUs and 40 CPUs per node).
+
+\end{frame}
+
+\begin{frame}[fragile]{Using multiple CPUs for ETL}
+  In Slurm scripts:
+\begin{minted}{bash}
+#SBATCH --cpus-per-task=10
+\end{minted}
+
+\vspace{0.5em}
+
+\alert{Note:} using multiple CPUs \emph{not} automatic, code needs to support it!
+
+\vspace{0.5em}
+
+  For example in TensorFlow:
+
+\begin{minted}[fontsize=\small]{python}
+dataset = dataset.map(..., num_parallel_calls=10)
+dataset = dataset.prefetch(buffer_size)
+\end{minted}
+
+  PyTorch:
+
+\begin{minted}[fontsize=\small]{python}
+train_loader = torch.utils.data.DataLoader(..., num_workers=10)
+\end{minted}
+\end{frame}
+
 \section{Multi-GPU and multi-node jobs}
+
+\begin{frame}[fragile]{Multi-GPU}
+
+  Many frameworks support multi-GPU within a single node.
+
+  \vspace{0.5em}
+  
+  Slurm script:
+  \begin{minted}{bash}
+#SBATCH --gres=gpu:v100:4
+  \end{minted}
+
+  \vspace{0.5em}
+  
+  \begin{columns}[t]
+    \begin{column}{0.47\linewidth}
+      TensorFlow:
+      
+      \begin{minted}[fontsize=\footnotesize]{python}
+mirrored_strategy = \
+  tf.distribute.MirroredStrategy()
+with mirrored_strategy.scope():
+    model = Sequential(...)
+    model.add(...)
+    model.add(...)
+    model.compile(...)
+      \end{minted}
+    \end{column}
+    \begin{column}{0.47\linewidth}
+      PyTorch:
+      
+      \begin{minted}[fontsize=\footnotesize]{python}
+model = MyModel(...)
+if torch.cuda.device_count() > 1:
+    model = nn.DataParallel(model)
+model.to(device)
+      \end{minted}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Multi-GPU and multi-node}
+  \begin{itemize}
+  \item A single node has 4 GPUs
+  \item If you need more than 4 GPUs, we recommend \alert{Horovod}
+  \item Supported for TensorFlow and PyTorch on Puhti
+  \item Uses MPI and NCCL for interprocess communication
+  \item Modules with {\tt -hvd suffix}
+  \end{itemize}
+
+  \vspace{0.7em}
+
+  Try: \vspace{-2mm}
+\begin{verbatim}
+module avail hvd
+module load tensorflow/2.0.0-hvd
+\end{verbatim}
+
+\end{frame}  
+
+\begin{frame}[fragile]{Slurm example for Horovod}
+  Example slurm script that uses \alert{8 GPUs} across \alert{two computers}
+
+\begin{itemize}
+\item MPI terminology: 8 tasks, 2 nodes
+\item Each task is 1 GPU and 10 CPUs
+\end{itemize}
+  
+  \begin{minted}[fontsize=\small,highlightlines={4,5,6,8}]{bash}
+#!/bin/bash
+#SBATCH --account=<project>
+#SBATCH --partition=gpu
+#SBATCH --ntasks=8
+#SBATCH --nodes=2
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=32G
+#SBATCH --time=1:00:00
+#SBATCH --gres=gpu:v100:4
+
+srun python3 myprog.py <options>
+\end{minted}
+\end{frame}
 
 % srun --ntasks=$SLURM_NNODES --ntasks-per-node=1 \
 %     tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH  
