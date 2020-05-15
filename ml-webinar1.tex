@@ -227,6 +227,26 @@ srun python3 myprog.py <options>
 \end{frame}
 
 \begin{frame}[fragile]{Running a job on Puhti}
+
+  Example job script for Singularity-based modules:
+  
+\begin{minted}[fontsize=\small,highlightlines={11}]{bash}
+#!/bin/bash
+#SBATCH --account=<project>
+#SBATCH --partition=gpu
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=64G
+#SBATCH --time=1:00:00
+#SBATCH --gres=gpu:v100:1
+
+module load tensorflow/nvidia-20.03-tf2-py3
+srun singularity_wrapper exec python3 myprog.py <options>
+\end{minted}
+
+\end{frame}
+
+\begin{frame}[fragile]{Running a job on Puhti}
   Submit the job:
 \begin{verbatim}
 sbatch run.sh
@@ -526,6 +546,48 @@ srun python3 myprog.py <options>
 
 \section{Singularity containers}
 
+\begin{frame}[fragile]{Singularity on Puhti}
+  \begin{itemize}
+  \item Puhti supports Singularity-based containers
+  \item Some of our modules use it -- just remember to prefix commands with \
+    {\tt singularity\_wrapper exec}
+  \item You can also convert your own Docker containers, see:
+    {\small \link{https://docs.csc.fi/computing/containers/run-existing/}}
+  \end{itemize}
+
+  \vspace{5mm}
+  Conversion (preferrably not in login nodes!):
+  \vspace{-4mm}
+\begin{minted}[fontsize=\small]{shell-session}
+$ singularity build pytorch_20.03-py3.sif \
+              docker://nvcr.io/nvidia/pytorch:20.03-py3
+\end{minted}
+
+Extract from Slurm script:
+\vspace{-4mm}
+\begin{minted}[fontsize=\small]{bash}
+srun singularity_wrapper exec --nv pytorch_20.03-py3.sif \
+    python3 myprog <options>
+\end{minted}
+  
+\end{frame}
+
+\begin{frame}[fragile]{Special Singularity-based applications}
+
+  Specialized Singularity-based applications not shown with default modules
+
+  \vspace{1em}
+
+  \alert{Example:} Turku neural parser
+
+\begin{minted}[fontsize=\small]{shell-session}
+$ module use /appl/soft/ai/singularity/modulefiles/
+$ module load turku-neural-parser/fi-en-sv-gpu
+$ echo "Minulla on koira." | singularity_wrapper run \
+    stream fi_tdt parse_plaintext
+\end{minted}
+  
+\end{frame}
 \end{document}
 
 %%% Local Variables: 
