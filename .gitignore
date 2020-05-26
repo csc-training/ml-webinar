@@ -5,5 +5,5 @@
 *.out
 *.snm
 *.toc
-/_minted-ml-webinar1
-/ml-webinar1.vrb
+/_minted-ml-webinar?
+/ml-webinar?.vrb

@@ -5,6 +5,7 @@
 \usepackage{url}
 \usepackage{minted}
 \usepackage[absolute,overlay]{textpos}
+\usepackage{tikz}
 
 \graphicspath{{images/}}
 
@@ -18,8 +19,9 @@
 \newcommand{\link}[1]{\alert{\url{#1}}}
 \newcommand{\vitem}{\vfill\item}
 
-\title{Machine Learning \\at CSC}
-\subtitle{June 3, 2020\\[2mm]
+\title{Machine Learning \\on Puhti}
+\subtitle{Part 1: Getting started\\[5mm]
+  June 3, 2020\\
   Mats Sjöberg -- mats.sjoberg@csc.fi}
 
 \begin{document}
@@ -34,30 +36,68 @@
 % with text apparing and disappearing - circle around place in picture
 
 \begin{frame}{What CSC service to use?}
-  \begin{itemize}
-  \item CSC's supercomputer \alert{Puhti}
-    \begin{itemize}
-    \item<2-> Cluster with GPU-accelerated nodes
-    \item<2-> Multi-user environment
-    \end{itemize}
-  \item Virtual server on \alert{Pouta}
-    \begin{itemize}
-    \item<3-> Your ``own'' server
-    \item<3-> Less powerful than Puhti
-    \end{itemize}
-  \item Container cloud \alert{Rahti}
-    \begin{itemize}
-    \item<4-> Easy to run containers
-    \item<4-> No GPUs \textbf{yet}
-    \end{itemize}
-  \end{itemize}
-  \vspace{-5mm}
-  \begin{flushright}
-  \includegraphics[width=0.9\textwidth]{csc-services}  
-  \end{flushright}
+  \vspace{2mm}
+  \begin{tabular}{ccc}
+    \uncover<3->{\alert{Pouta}} & \uncover<2->{\alert{Puhti}} & \uncover<4->{\alert{Rahti}} \\
+    \uncover<3->{%
+    \begin{minipage}{0.35\textwidth}\footnotesize
+      \begin{itemize}
+      \item Your ``own'' (virtual) server
+      \item Less powerful than Puhti
+      \end{itemize}
+    \end{minipage}} &
+                      \uncover<2->{%
+                      \begin{minipage}{0.33\textwidth}\footnotesize
+                       \begin{itemize}
+                       \item Supercomputer cluster
+                       \item GPU-accelerated nodes
+                       \item Multi-user system
+                       \end{itemize}
+                     \end{minipage}} &
+                                       \uncover<4->{%
+                                       \begin{minipage}{0.32\textwidth}\footnotesize
+                                         \begin{itemize}
+                                         \item Container cloud
+                                         \item No GPUs \emph{yet}
+                                         \end{itemize}
+                                       \end{minipage}}
+  \end{tabular}%}
+  \\[4mm]
+  \begin{tikzpicture}
+    \node[anchor=south west,inner sep=0] at (0,0) {\includegraphics[width=\textwidth]{csc-services}};
+    \uncover<2>{\draw[red,ultra thick,rounded corners] (6.5,1.95) rectangle ++(3.7,2.25);}
+    \uncover<3>{\draw[red,ultra thick,rounded corners] (-0.2,-0.2) rectangle ++(3.6,3.5);}
+    \uncover<4>{\draw[red,ultra thick,rounded corners] (10.7,0.3) rectangle ++(3.5,1.55);}
+    \uncover<5>{\draw[red,ultra thick,rounded corners] (4.3,0.33) rectangle ++(5.9,1.45);}
+    \uncover<6>{\draw[red,ultra thick,rounded corners] (4.35,1.95) rectangle ++(2.2,2.25);}
+  \end{tikzpicture}  
 \end{frame}
 
-\section{Puhti supercomputer}
+% \begin{frame}{What CSC service to use?}
+%   \begin{itemize}
+%   \item CSC's supercomputer \alert{Puhti}
+%     \begin{itemize}
+%     \item<2-> Cluster with GPU-accelerated nodes
+%     \item<2-> Multi-user environment
+%     \end{itemize}
+%   \item Virtual server on \alert{Pouta}
+%     \begin{itemize}
+%     \item<3-> Your ``own'' server
+%     \item<3-> Less powerful than Puhti
+%     \end{itemize}
+%   \item Container cloud \alert{Rahti}
+%     \begin{itemize}
+%     \item<4-> Easy to run containers
+%     \item<4-> No GPUs \textbf{yet}
+%     \end{itemize}
+%   \end{itemize}
+%   \vspace{-5mm}
+%   \begin{flushright}
+%   \includegraphics[width=0.9\textwidth]{csc-services}  
+%   \end{flushright}
+% \end{frame}
+
+\section{Getting access to Puhti}
 
 \begin{frame}{Puhti supercomputer}
   \begin{columns}
@@ -120,6 +160,8 @@ $ ssh <csc_username>@puhti-login2.csc.fi
 \end{minted}
 
 \end{frame}
+
+\section{Running jobs on Puhti}
 
 \begin{frame}{Supported frameworks}
   We currently support:
@@ -373,221 +415,29 @@ srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
 
 \end{frame}
 
-\section{GPU utilization}
+\section*{Thank you!}
 
-\begin{frame}{GPU utilization}
+\begin{frame}{Don't forget part 2 of this webinar!}
 
-GPUs are an expensive resource compared to CPUs ($\times$ 60 BUs!) \\
-$\rightarrow$ GPU should be maximally utilized!
-
-\vspace{1em}
-
-\begin{minipage}{0.8\textwidth}
-For a running job:
-\begin{itemize}
-\item use {\tt squeue} to find out on what node (computer) it is running
-\item ssh into that node, e.g., {\tt ssh r01g01}
-\item find the process id of your job with \\
-  {\tt ps -u \$USER }
-\item run {\tt nvidia-smi}
-\end{itemize}
-\end{minipage}
-
-\begin{textblock}{6}(9.8,8)
-  \includegraphics[width=\textwidth]{v100}
-\end{textblock}
-\end{frame}
-
-\begin{frame}{GPU utilization}
-
-  For a finished job:
+  \textbf{Machine Learning on Puhti \\
+    Part 2: Scaling up and using resources efficiently}
 
   \begin{itemize}
-  \vitem run {\tt gpuseff <jobid>}
-  \vitem shows GPU utilisation statistics for the whole running time
-  \vitem \alert{note:} gpuseff is currently in testing usage, and still
-    under development
+  \item GPU utilization
+  \item Multi-GPU and multi-node jobs
+  \item Singularity containers
   \end{itemize}
 
   \vfill
-  
-  You can always contact our service desk if you need advice on how to
-  improve your GPU utilization!
-\end{frame}
 
-\begin{frame}[fragile]{Using multiple CPUs for ETL}
-  \includegraphics[width=\textwidth]{etl}
-
-  \begin{itemize}
-  \item Common bottle-neck: CPU cannot keep up with GPU
-  \item GPU has to wait for more data \ldots
-  \item Solution: use more CPUs (they are ``cheaper'' than GPUs!)
-  \end{itemize}
-
-  \vspace{0.5em}
-  
-  A good \alert{rule of thumb in Puhti is to reserve 10 CPUs per GPU} \\
-  (as there are 4 GPUs and 40 CPUs per node).
+  \begin{tabular}{ll}
+    \textbf{Time:}  & Wednesday, June 10, 2020 at 14:00-15:00 \\
+    \textbf{Place:} & \link{https://ssl.eventilla.com/event/jJRkz} \\
+  \end{tabular}
 
 \end{frame}
 
-\begin{frame}[fragile]{Using multiple CPUs for ETL}
-  In Slurm scripts:
-\begin{minted}{bash}
-#SBATCH --cpus-per-task=10
-\end{minted}
 
-\vspace{0.5em}
-
-\alert{Note:} using multiple CPUs \emph{not} automatic, code needs to support it!
-
-\vspace{0.5em}
-
-  For example in TensorFlow:
-
-\begin{minted}[fontsize=\small]{python}
-dataset = dataset.map(..., num_parallel_calls=10)
-dataset = dataset.prefetch(buffer_size)
-\end{minted}
-
-  PyTorch:
-
-\begin{minted}[fontsize=\small]{python}
-train_loader = torch.utils.data.DataLoader(..., num_workers=10)
-\end{minted}
-\end{frame}
-
-\section{Multi-GPU and multi-node jobs}
-
-\begin{frame}[fragile]{Multi-GPU}
-
-  Many frameworks support multi-GPU within a single node.
-
-  \vspace{0.5em}
-  
-  Slurm script:
-  \begin{minted}{bash}
-#SBATCH --gres=gpu:v100:4
-  \end{minted}
-
-  \vspace{0.5em}
-  
-  \begin{columns}[t]
-    \begin{column}{0.47\linewidth}
-      TensorFlow:
-      
-      \begin{minted}[fontsize=\footnotesize]{python}
-mirrored_strategy = \
-  tf.distribute.MirroredStrategy()
-with mirrored_strategy.scope():
-    model = Sequential(...)
-    model.add(...)
-    model.add(...)
-    model.compile(...)
-      \end{minted}
-    \end{column}
-    \begin{column}{0.47\linewidth}
-      PyTorch:
-      
-      \begin{minted}[fontsize=\footnotesize]{python}
-model = MyModel(...)
-if torch.cuda.device_count() > 1:
-    model = nn.DataParallel(model)
-model.to(device)
-      \end{minted}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}[fragile]{Multi-GPU and multi-node}
-  \begin{itemize}
-  \item A single node has 4 GPUs
-  \item If you need more than 4 GPUs, we recommend \alert{Horovod}
-  \item Supported for TensorFlow and PyTorch on Puhti
-  \item Uses MPI and NCCL for interprocess communication
-  \item Modules with {\tt -hvd suffix}
-  \end{itemize}
-
-  \vspace{0.7em}
-
-  Try: \vspace{-2mm}
-\begin{verbatim}
-module avail hvd
-module load tensorflow/2.0.0-hvd
-\end{verbatim}
-
-\end{frame}  
-
-\begin{frame}[fragile]{Slurm example for Horovod}
-  Example slurm script that uses \alert{8 GPUs} across \alert{two computers}
-
-\begin{itemize}
-\item MPI terminology: 8 tasks, 2 nodes
-\item Each task is 1 GPU and 10 CPUs
-\end{itemize}
-  
-  \begin{minted}[fontsize=\small,highlightlines={4,5,6,8}]{bash}
-#!/bin/bash
-#SBATCH --account=<project>
-#SBATCH --partition=gpu
-#SBATCH --ntasks=8
-#SBATCH --nodes=2
-#SBATCH --cpus-per-task=10
-#SBATCH --mem=32G
-#SBATCH --time=1:00:00
-#SBATCH --gres=gpu:v100:4
-
-srun python3 myprog.py <options>
-\end{minted}
-\end{frame}
-
-% srun --ntasks=$SLURM_NNODES --ntasks-per-node=1 \
-%     tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH  
-
-\section{Singularity containers}
-
-\begin{frame}[fragile]{Singularity on Puhti}
-  \begin{itemize}
-  \item Puhti supports Singularity-based containers
-  \item Some of our modules use it -- just remember to prefix commands with \
-    {\tt singularity\_wrapper exec}
-  \item You can also convert your own Docker containers, see:
-    {\small \link{https://docs.csc.fi/computing/containers/run-existing/}}
-  \end{itemize}
-
-  \vspace{5mm}
-  Conversion (preferrably not in login nodes!):
-  \vspace{-4mm}
-\begin{minted}[fontsize=\small]{shell-session}
-$ singularity build pytorch_20.03-py3.sif \
-              docker://nvcr.io/nvidia/pytorch:20.03-py3
-\end{minted}
-
-Extract from Slurm script:
-\vspace{-4mm}
-\begin{minted}[fontsize=\small]{bash}
-srun singularity_wrapper exec --nv pytorch_20.03-py3.sif \
-    python3 myprog <options>
-\end{minted}
-  
-\end{frame}
-
-\begin{frame}[fragile]{Special Singularity-based applications}
-
-  Specialized Singularity-based applications not shown with default modules
-
-  \vspace{1em}
-
-  \alert{Example:} Turku neural parser
-
-\begin{minted}[fontsize=\small]{shell-session}
-$ module use /appl/soft/ai/singularity/modulefiles/
-$ module load turku-neural-parser/fi-en-sv-gpu
-$ echo "Minulla on koira." | singularity_wrapper run \
-    stream fi_tdt parse_plaintext
-\end{minted}
-  
-\end{frame}
 \end{document}
 
 %%% Local Variables: 
