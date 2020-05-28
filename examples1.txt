@@ -1,11 +1,15 @@
+# Script for webinar 1
+# TODO beforehand
+
 ssh puhti
-tmux -L ml-webinar
-unset SBATCH_PARTITION
+# export SBATCH_PARTITION=gputest
 export SBATCH_RESERVATION=mlwebinar1
-cd ~/ml-webinar/examples
+cd ~/ml-webinar/
 git status
-git checkout -- run.sh
+git checkout -- examples/run.sh
+./cleanup
 cd
+clear
 
 # After slide 13
 
@@ -96,7 +100,7 @@ vim run.sh
 # change to 2.2-sng
 # AND srun singularity_wrapper exec
 sbatch run.sh
-squeue -l -u $USER -p gputest
+squeue -l -u $USER
 tail -f slurm*out
 Ctrl-C
 

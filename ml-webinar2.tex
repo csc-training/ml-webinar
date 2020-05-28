@@ -22,16 +22,46 @@
 \title{Machine Learning\\on Puhti}
 \subtitle{Part 2: Scaling up and using resources efficiently\\[5mm]
   June 10, 2020\\
-  Mats Sjöberg -- mats.sjoberg@csc.fi\\[5mm]
-  \tt{\footnotesize https://github.com/csc-training/ml-webinar/}}
+  Mats Sjöberg\\
+  {\tt mats.sjoberg@csc.fi}}
 
 \begin{document}
 
-\begin{frame}{Overview}
-  \tableofcontents
+\begin{frame}{Webinar: Machine Learning on Puhti}
+  \begin{columns}[t]
+    \begin{column}{0.45\linewidth}
+      \vfill
+      \hspace{15mm} {\em Wed, June 3} \\[5mm]
+
+      \textbf{Part 1: Getting started}
+      
+      \begin{itemize}
+      \item CSC's services
+      \item Puhti supercomputer
+      \item Available software
+      \item Running jobs on Puhti
+      \item Data storage
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.55\linewidth}
+      \vfill
+      \hspace{12mm} \alert{\em TODAY} \\[5mm]
+      
+      \textbf{Part 2: Scaling up and using resources efficiently}
+      
+      \begin{itemize}
+      \item Efficient data storage
+      \item GPU utilization
+      \item Multi-GPU and multi-node jobs
+      \item Singularity containers
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{10mm}
+  \link{https://github.com/csc-training/ml-webinar/}
 \end{frame}
 
-\section{Data storage}
+\section{Efficient data storage}
 
 \begin{frame}{Data storage on Puhti}
 
@@ -263,11 +293,12 @@ model.to(device)
 
 \begin{frame}[fragile]{Multi-GPU and multi-node}
   \begin{itemize}
-  \item A single node has 4 GPUs
   \item If you need more than 4 GPUs, we recommend \alert{Horovod}
   \item Supported for TensorFlow and PyTorch on Puhti
-  \item Uses MPI and NCCL for interprocess communication
-  \item Modules with {\tt -hvd suffix}
+  \item Uses MPI and NCCL2 for interprocess communication
+  \item Also requires some changes in the code, see e.g.: \\
+    {\small \link{https://github.com/horovod/horovod/tree/master/examples}}
+  \item In Puhti modules with {\tt -hvd} suffix are Horovod-enabled
   \end{itemize}
 
   \vspace{0.7em}
@@ -277,8 +308,7 @@ model.to(device)
 module avail hvd
 module load tensorflow/2.0.0-hvd
 \end{verbatim}
-
-\end{frame}  
+\end{frame}
 
 \begin{frame}[fragile]{Slurm example for Horovod}
   Example slurm script that uses \alert{8 GPUs} across \alert{two computers}
@@ -349,6 +379,18 @@ $ echo "Minulla on koira." | singularity_wrapper run \
     stream fi_tdt parse_plaintext
 \end{minted}
   
+\end{frame}
+
+\begin{frame}{Further resources}
+  \begin{itemize}
+  \item Accessing and using Puhti: \link{https://docs.csc.fi/computing/overview/}
+  \item MyCSC portal: \link{https://my.csc.fi}
+  \item Machine learning software on Puhti: \\
+    {\footnotesize \link{https://docs.csc.fi/apps/\#data-analytics-and-machine-learning}}
+  \item GPU-accelerated machine learning guide: \link{https://docs.csc.fi/support/tutorials/gpu-ml/}
+  \item Slides and code from this webinar: \link{https://github.com/csc-training/ml-webinar/}
+  \item Deploying machine learning on Rahti: \link{https://github.com/cscfi/rahti-ml-examples}
+  \end{itemize}
 \end{frame}
 
 \section*{Thank you!}

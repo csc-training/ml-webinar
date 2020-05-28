@@ -1,55 +1,69 @@
+# Script for webinar 2
+# TODO beforehand
+
 ssh puhti
-tmux -L ml-webinar
-unset SBATCH_PARTITION
+# export SBATCH_PARTITION=gputest
 export SBATCH_RESERVATION=mlwebinar2
-cd ~/ml-webinar/examples
+cd ~/ml-webinar/
 git status
-git checkout -- run.sh
+./cleanup
 
-# After slide 22
+cd examples
+vim run.sh
+# change to 2.2-sng
+# AND srun singularity_wrapper exec
+clear
 
-vim tf2-dvc.py
+# After slide 7
+
+ls
+less dogs_vs_cats.py
 # show DATADIR
 
-ls /scratch/dac/data/dogs-vs-cats.tar
+ls -lh /scratch/dac/data/dogs-vs-cats.tar
 vim run.sh
-# add ,nvme:10
-#tar xf /scratch/dac/data/dogs-vs-cats.tar -C $LOCAL_SCRATCH
-# export DATADIR=$LOCAL_SCRATCH
+# ADD ,nvme:10
+# tar xf /scratch/dac/data/dogs-vs-cats.tar -C $LOCAL_SCRATCH
+# --datadir=$LOCAL_SCRATCH
 
 sbatch run.sh
-squeue -l -u $USER -p gputest
+squeue -l -u $USER
 tail -f slurm*out
-
-
-
-ssh puhti
-cd etc
-make uninstall
-rm -rf ~/.local/lib/python3.*
-cd examples
-rm -rf slurm*out logs *.h5
-cp ~/tmp/run.sh .
-vim run.sh # cpus-per-task=1
-Ctrl-D
-ssh puhti
 
 # After slide 12
 
-cd examples
+# Show parts with cpu
+less dogs_vs_cats.py
+
+vim run.sh  # set cpus=1 and --cpus=1
 
 sbatch run.sh
-squeue -l -u $USER -p gputest
+squeue -l -u $USER
 
 ssh rXXgYY nvidia-smi
 
 Ctrl-D
-squeue -l -u $USER -p gputest
+squeue -l -u $USER
 
 gpuseff JOBID
 
-vim run.sh # cpus-per-task=10
+vim run.sh # cpus-per-task=10, --cpus=10 --epochs=100
 sbatch run.sh
-squeue -l -u $USER -p gputest
+squeue -l -u $USER
 
 ssh rXXgYY nvidia-smi
+
+## Multi-GPU If there is time...
+vim run.sh  # --gres=gpu:v100:4 --cpus=40
+
+emacs -nw dogs_vs_cats.py
+# mirrored_strategy = tf.distribute.MirroredStrategy()
+# with mirrored_strategy.scope():
+#    model = Sequential(...)
+
+sbatch run.sh
+squeue -l -u $USER
+
+ssh rXXgYY
+watch nvidia-smi
+
