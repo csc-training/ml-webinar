@@ -1,0 +1,55 @@
+ssh puhti
+tmux -L ml-webinar
+unset SBATCH_PARTITION
+export SBATCH_RESERVATION=mlwebinar2
+cd ~/ml-webinar/examples
+git status
+git checkout -- run.sh
+
+# After slide 22
+
+vim tf2-dvc.py
+# show DATADIR
+
+ls /scratch/dac/data/dogs-vs-cats.tar
+vim run.sh
+# add ,nvme:10
+#tar xf /scratch/dac/data/dogs-vs-cats.tar -C $LOCAL_SCRATCH
+# export DATADIR=$LOCAL_SCRATCH
+
+sbatch run.sh
+squeue -l -u $USER -p gputest
+tail -f slurm*out
+
+
+
+ssh puhti
+cd etc
+make uninstall
+rm -rf ~/.local/lib/python3.*
+cd examples
+rm -rf slurm*out logs *.h5
+cp ~/tmp/run.sh .
+vim run.sh # cpus-per-task=1
+Ctrl-D
+ssh puhti
+
+# After slide 12
+
+cd examples
+
+sbatch run.sh
+squeue -l -u $USER -p gputest
+
+ssh rXXgYY nvidia-smi
+
+Ctrl-D
+squeue -l -u $USER -p gputest
+
+gpuseff JOBID
+
+vim run.sh # cpus-per-task=10
+sbatch run.sh
+squeue -l -u $USER -p gputest
+
+ssh rXXgYY nvidia-smi

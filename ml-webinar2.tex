@@ -19,10 +19,11 @@
 \newcommand{\link}[1]{\alert{\url{#1}}}
 \newcommand{\vitem}{\vfill\item}
 
-\title{Machine Learning \\on Puhti}
+\title{Machine Learning\\on Puhti}
 \subtitle{Part 2: Scaling up and using resources efficiently\\[5mm]
   June 10, 2020\\
-  Mats Sjöberg -- mats.sjoberg@csc.fi}
+  Mats Sjöberg -- mats.sjoberg@csc.fi\\[5mm]
+  \tt{\footnotesize https://github.com/csc-training/ml-webinar/}}
 
 \begin{document}
 
@@ -150,8 +151,6 @@ For a running job:
 \begin{itemize}
 \item use {\tt squeue} to find out on what node (computer) it is running
 \item ssh into that node, e.g., {\tt ssh r01g01}
-\item find the process id of your job with \\
-  {\tt ps -u \$USER }
 \item run {\tt nvidia-smi}
 \end{itemize}
 \end{minipage}
@@ -167,7 +166,7 @@ For a running job:
 
   \begin{itemize}
   \vitem run {\tt gpuseff <jobid>}
-  \vitem shows GPU utilisation statistics for the whole running time
+  \vitem shows GPU utilization statistics for the whole running time
   \vitem \alert{note:} gpuseff is currently in testing usage, and still
     under development
   \end{itemize}

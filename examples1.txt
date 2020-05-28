@@ -1,0 +1,103 @@
+ssh puhti
+tmux -L ml-webinar
+unset SBATCH_PARTITION
+export SBATCH_RESERVATION=mlwebinar1
+cd ~/ml-webinar/examples
+git status
+git checkout -- run.sh
+cd
+
+# After slide 13
+
+# Demonstrate that system python3 doens't have e.g. tensorflow
+module list
+which python3
+python3
+>>> import tensorflow
+Ctrl-D
+
+# Show tensorflow modules and load 2.0.0
+module avail tensorflow
+module load tensorflow/2.0.0
+
+# Demonstrate that we now have different python3, and it has tensorflow
+# Also show that imageio is missing, transformers is too old...
+# WARNING: pretty slow on first import!
+which python3
+python3
+>>> import tensorflow
+>>> tensorflow.__version__
+>>> import imageio
+>>> import transformers
+Ctrl-D
+
+# Install with pip
+pip install --user imageio
+ls .local/lib/python3.7/site-packages/
+
+pip install transformers --user --upgrade               
+
+# Show imageio is OK, transformers still loading old version
+python3
+>>> import imageio
+>>> imageio.__path__
+>>> import transformers
+>>> transformers.__version__
+>>> transformers.__path__
+Ctrl-D
+
+# Adjust PYTHONPATH, try again
+export PYTHONPATH=~/.local/lib/python3.7/site-packages/:$PYTHONPATH
+python3
+>>> import transformers
+>>> transformers.__version__
+>>> transformers.__path__
+Ctrl-D
+
+# Try Singularity module
+# Note different Python version
+# Demonstrate imageio missing
+module list
+module avail tensorflow
+module load tensorflow/2.2-sng
+which python3
+singularity_wrapper exec python3
+>>> import tensorflow
+>>> tensorflow.__version__
+>>> import imageio
+Ctrl-D
+
+# Show Python-specific install paths, install again with singularity_wrapper
+ls .local/lib/
+singularity_wrapper exec pip install --user imageio
+ls .local/lib/python3.6/site-packages/
+
+singularity_wrapper exec python3
+>>> import imageio
+>>> imageio.__path__
+
+# Back to slides
+# After slide 19
+
+# Run simple training: CNN cats-vs-dogs classification
+cd ~/ml-webinar/examples
+cat run.sh
+less dogs_vs_cats.py
+eog /scratch/dac/data/dogs-vs-cats/train-2000/train/cats/cat.1.jpg
+eog /scratch/dac/data/dogs-vs-cats/train-2000/train/dogs/dog.1.jpg
+
+sbatch run.sh
+squeue -l -u $USER
+ls
+tail -f slurm*out
+Ctrl-C
+
+vim run.sh
+# change to 2.2-sng
+# AND srun singularity_wrapper exec
+sbatch run.sh
+squeue -l -u $USER -p gputest
+tail -f slurm*out
+Ctrl-C
+
+# Back to slides

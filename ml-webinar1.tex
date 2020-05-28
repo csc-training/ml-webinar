@@ -19,15 +19,46 @@
 \newcommand{\link}[1]{\alert{\url{#1}}}
 \newcommand{\vitem}{\vfill\item}
 
-\title{Machine Learning \\on Puhti}
+\title{Machine Learning\\on Puhti}
 \subtitle{Part 1: Getting started\\[5mm]
   June 3, 2020\\
-  Mats Sjöberg -- mats.sjoberg@csc.fi}
+  Mats Sjöberg\\
+  {\tt\small mats.sjoberg@csc.fi}}
 
 \begin{document}
 
-\begin{frame}{Overview}
-  \tableofcontents
+\begin{frame}{Webinar: Machine Learning on Puhti}
+  \begin{columns}[t]
+    \begin{column}{0.45\linewidth}
+      \vfill
+      \hspace{15mm} \alert{TODAY} \\[5mm]
+
+      \textbf{Part 1: Getting started}
+      
+      \begin{itemize}
+      \item CSC's services
+      \item Puhti supercomputer
+      \item Available software
+      \item Running jobs on Puhti
+      \item Data storage
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.55\linewidth}
+      \vfill
+      \hspace{12mm} \alert{Wed, June 10} \\[5mm]
+      
+      \textbf{Part 2: Scaling up and using resources efficiently}
+      
+      \begin{itemize}
+      \item Efficient data storage
+      \item GPU utilization
+      \item Multi-GPU and multi-node jobs
+      \item Singularity containers
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{10mm}
+  \link{https://github.com/csc-training/ml-webinar/}
 \end{frame}
 
 \section{What CSC service to use?}
@@ -43,6 +74,7 @@
     \begin{minipage}{0.35\textwidth}\footnotesize
       \begin{itemize}
       \item Your ``own'' (virtual) server
+      \item Limited number of GPUs
       \item Less powerful than Puhti
       \end{itemize}
     \end{minipage}} &
@@ -58,6 +90,7 @@
                                        \begin{minipage}{0.32\textwidth}\footnotesize
                                          \begin{itemize}
                                          \item Container cloud
+                                         \item Easy to use
                                          \item No GPUs \emph{yet}
                                          \end{itemize}
                                        \end{minipage}}
@@ -73,42 +106,19 @@
   \end{tikzpicture}  
 \end{frame}
 
-% \begin{frame}{What CSC service to use?}
-%   \begin{itemize}
-%   \item CSC's supercomputer \alert{Puhti}
-%     \begin{itemize}
-%     \item<2-> Cluster with GPU-accelerated nodes
-%     \item<2-> Multi-user environment
-%     \end{itemize}
-%   \item Virtual server on \alert{Pouta}
-%     \begin{itemize}
-%     \item<3-> Your ``own'' server
-%     \item<3-> Less powerful than Puhti
-%     \end{itemize}
-%   \item Container cloud \alert{Rahti}
-%     \begin{itemize}
-%     \item<4-> Easy to run containers
-%     \item<4-> No GPUs \textbf{yet}
-%     \end{itemize}
-%   \end{itemize}
-%   \vspace{-5mm}
-%   \begin{flushright}
-%   \includegraphics[width=0.9\textwidth]{csc-services}  
-%   \end{flushright}
-% \end{frame}
-
-\section{Getting access to Puhti}
+\section{Puhti supercomputer}
 
 \begin{frame}{Puhti supercomputer}
   \begin{columns}
     \begin{column}{0.76\linewidth}
-      \begin{minipage}[c][0.6\textheight][s]{\columnwidth}
+      \begin{minipage}[c][0.8\textheight][s]{\columnwidth}
       \begin{itemize}
-        \item \emph{Puhti-AI}, cluster with 80 nodes with \mbox{4 GPUs}
+        \vitem \emph{Puhti} has a total of 682 CPU nodes, each with 2$\times$20 Intel Xeon 2,1 GHz cores
+        \vitem \emph{Puhti-AI} partition has 80 nodes with \mbox{4 GPUs}
         each $\rightarrow$ 320 GPUs in total
-        \vitem Latest generation Nvidia V100 GPUs (Volta) with 32 GB of memory
+        \vitem NVIDIA V100 GPUs (Volta) with 32 GB of memory
         \vitem Fast network: 2 $\times$ 100 Gbps links to each node
-        \vitem Each node has a fast 3.2 TB local NVME disk
+        \vitem Each node has a fast 3.6 TB local NVME disk
       \end{itemize}
       \vfill
       \end{minipage}
@@ -161,7 +171,7 @@ $ ssh <csc_username>@puhti-login2.csc.fi
 
 \end{frame}
 
-\section{Running jobs on Puhti}
+\section{Available software}
 
 \begin{frame}{Supported frameworks}
   We currently support:
@@ -206,7 +216,18 @@ pip install --user <packagename>
       servicedesk@csc.fi} -- we can install it for you!
   \end{itemize}
   \vfill
-  
+\end{frame}
+
+\begin{frame}[fragile]{What if some package is missing?}
+  \alert{Note:} you can even upgrade an existing package with:
+\begin{verbatim}
+pip install --user --upgrade <packagename>
+\end{verbatim}
+  but then you need to adjust the order in which packages are accessed by Python:
+{\small
+\begin{verbatim}
+export PYTHONPATH=~/.local/lib/python3.7/site-packages/:$PYTHONPATH  
+\end{verbatim}}
 \end{frame}
 
 \begin{frame}[fragile]{What if some package is missing?}
@@ -227,6 +248,8 @@ $ pip install ...
   \end{itemize}
   
 \end{frame}
+
+\section{Running jobs on Puhti}
 
 \begin{frame}{Running a job on Puhti}
   \alert{Don't run heavy computing jobs in the login nodes!}
@@ -368,52 +391,56 @@ $ swift download <bucket-name> your-dataset.tar
   Consider alternatives:
 
   \begin{itemize}
-  \vitem packaging your dataset into larger files                     
-  \vitem use NVME fast local storage on GPU nodes
+    \vitem packaging your dataset into larger files                     
+    \vitem use NVME fast local storage on GPU nodes
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Using more efficient data formats}
-
-  Instead of many small files, use one or a few bigger files.
 
   \vfill
+  \emph{More details in webinar part 2!}
+
+\end{frame}
+
+% \begin{frame}{Using more efficient data formats}
+
+%   Instead of many small files, use one or a few bigger files.
+
+%   \vfill
   
-  Examples:
+%   Examples:
 
-  \begin{itemize}
-  \vitem TensorFlow's TFRecord format
-  \vitem HDF5
-  \vitem LMDB
-  \vitem ZIP, for example via Python's {\tt zipfile} library
-  \end{itemize}
+%   \begin{itemize}
+%   \vitem TensorFlow's TFRecord format
+%   \vitem HDF5
+%   \vitem LMDB
+%   \vitem ZIP, for example via Python's {\tt zipfile} library
+%   \end{itemize}
 
-  \vfill
-\end{frame}
+%   \vfill
+% \end{frame}
 
-\begin{frame}[fragile]{Fast local NVME drive}
+% \begin{frame}[fragile]{Fast local NVME drive}
 
-  \begin{itemize}
-  \item All GPU nodes have a local NVME drive
-  \item Just add {\tt nvme:<number-of-GB>} to sbatch {\tt --gres} flag
-  \end{itemize}
+%   \begin{itemize}
+%   \item All GPU nodes have a local NVME drive
+%   \item Just add {\tt nvme:<number-of-GB>} to sbatch {\tt --gres} flag
+%   \end{itemize}
 
-\begin{minted}[fontsize=\footnotesize,highlightlines={8,10,12}]{bash}
-#!/bin/bash
-#SBATCH --account=<project>
-#SBATCH --partition=gpu
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=10
-#SBATCH --mem=64G
-#SBATCH --time=1:00:00
-#SBATCH --gres=gpu:v100:1,nvme:100
+% \begin{minted}[fontsize=\footnotesize,highlightlines={8,10,12}]{bash}
+% #!/bin/bash
+% #SBATCH --account=<project>
+% #SBATCH --partition=gpu
+% #SBATCH --ntasks=1
+% #SBATCH --cpus-per-task=10
+% #SBATCH --mem=64G
+% #SBATCH --time=1:00:00
+% #SBATCH --gres=gpu:v100:1,nvme:100
 
-tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH
+% tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH
 
-srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
-\end{minted}
+% srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
+% \end{minted}
 
-\end{frame}
+% \end{frame}
 
 \section*{Thank you!}
 
@@ -423,6 +450,7 @@ srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
     Part 2: Scaling up and using resources efficiently}
 
   \begin{itemize}
+  \item Efficient data storage
   \item GPU utilization
   \item Multi-GPU and multi-node jobs
   \item Singularity containers
