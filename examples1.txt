@@ -5,15 +5,14 @@ ssh puhti
 # export SBATCH_PARTITION=gputest
 export SBATCH_RESERVATION=mlwebinar1
 cd ~/ml-webinar/
-git status
-git checkout -- examples/run.sh
+git status; git pull
 ./cleanup
 cd
 clear
 
 # After slide 13
 
-# Demonstrate that system python3 doens't have e.g. tensorflow
+# Demonstrate that system python3 doesn't have e.g. tensorflow
 module list
 which python3
 python3

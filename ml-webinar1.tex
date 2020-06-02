@@ -152,7 +152,7 @@
 
 \end{frame}
 
-\begin{frame}[fragile]{Accessing Puhti}
+\begin{frame}[fragile]{Logging in to Puhti}
   \begin{itemize}
   \item Using an ssh client such as OpenSSH or PuTTY
   \item Basic Linux skills are required!
@@ -400,47 +400,47 @@ $ swift download <bucket-name> your-dataset.tar
 
 \end{frame}
 
-\begin{frame}{Using more efficient data formats}
+% \begin{frame}{Using more efficient data formats}
 
-  Instead of many small files, use one or a few bigger files.
+%   Instead of many small files, use one or a few bigger files.
 
-  \vfill
+%   \vfill
   
-  Examples:
+%   Examples:
 
-  \begin{itemize}
-  \vitem TensorFlow's TFRecord format
-  \vitem HDF5
-  \vitem LMDB
-  \vitem ZIP, for example via Python's {\tt zipfile} library
-  \end{itemize}
+%   \begin{itemize}
+%   \vitem TensorFlow's TFRecord format
+%   \vitem HDF5
+%   \vitem LMDB
+%   \vitem ZIP, for example via Python's {\tt zipfile} library
+%   \end{itemize}
 
-  \vfill
-\end{frame}
+%   \vfill
+% \end{frame}
 
-\begin{frame}[fragile]{Fast local NVME drive}
+% \begin{frame}[fragile]{Fast local NVME drive}
 
-  \begin{itemize}
-  \item All GPU nodes have a local NVME drive
-  \item Just add {\tt nvme:<number-of-GB>} to sbatch {\tt --gres} flag
-  \end{itemize}
+%   \begin{itemize}
+%   \item All GPU nodes have a local NVME drive
+%   \item Just add {\tt nvme:<number-of-GB>} to sbatch {\tt --gres} flag
+%   \end{itemize}
 
-\begin{minted}[fontsize=\footnotesize,highlightlines={8,10,12}]{bash}
-#!/bin/bash
-#SBATCH --account=<project>
-#SBATCH --partition=gpu
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=10
-#SBATCH --mem=64G
-#SBATCH --time=1:00:00
-#SBATCH --gres=gpu:v100:1,nvme:100
+% \begin{minted}[fontsize=\footnotesize,highlightlines={8,10,12}]{bash}
+% #!/bin/bash
+% #SBATCH --account=<project>
+% #SBATCH --partition=gpu
+% #SBATCH --ntasks=1
+% #SBATCH --cpus-per-task=10
+% #SBATCH --mem=64G
+% #SBATCH --time=1:00:00
+% #SBATCH --gres=gpu:v100:1,nvme:100
 
-tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH
+% tar xf /scratch/<your-project>/your-dataset.tar -C $LOCAL_SCRATCH
 
-srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
-\end{minted}
+% srun python3 myprog.py --data_dir=$LOCAL_SCRATCH <options>
+% \end{minted}
 
-\end{frame}
+% \end{frame}
 
 \section*{Thank you!}
 
