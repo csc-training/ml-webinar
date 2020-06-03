@@ -235,6 +235,7 @@ export PYTHONPATH=~/.local/lib/python3.7/site-packages/:$PYTHONPATH
   \begin{itemize}
   \vitem use a virtualenv:
 \begin{minted}{shell-session}
+$ module purge
 $ python3 -m venv myenv
 $ source myenv/bin/activate
 $ pip install ...
@@ -377,7 +378,9 @@ $ allas-conf
 $ cd /scratch/<your-project>
 $ swift download <bucket-name> your-dataset.tar  
 \end{minted}
-%\end{verbatim}
+  % \end{verbatim}
+
+  \link{https://docs.csc.fi/data/Allas/}
 \end{frame}
 
 \begin{frame}{Large number of files}
