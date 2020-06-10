@@ -35,7 +35,7 @@ tail -f slurm*out
 # Show parts with cpu
 less dogs_vs_cats.py
 
-vim run.sh  # set cpus=1 and --cpus=1
+vim run.sh  # set cpus-per-task=1 and --cpus=1
 
 sbatch run.sh
 squeue -l -u $USER
@@ -47,19 +47,22 @@ squeue -l -u $USER
 
 gpuseff JOBID
 
+## This part can be skipped
+
 vim run.sh # cpus-per-task=10, --cpus=10 --epochs=100
 sbatch run.sh
 squeue -l -u $USER
 
 ssh rXXgYY nvidia-smi
 
-## Multi-GPU If there is time...
-vim run.sh  # --gres=gpu:v100:4 --cpus=40
+## After slide 14
+vim run.sh  # --cpus-per-task=40 --gres=gpu:v100:4 --cpus=40
 
 emacs -nw dogs_vs_cats.py
 # mirrored_strategy = tf.distribute.MirroredStrategy()
 # with mirrored_strategy.scope():
 #    model = Sequential(...)
+## C-c >
 
 sbatch run.sh
 squeue -l -u $USER
